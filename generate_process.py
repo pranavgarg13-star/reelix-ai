@@ -1,4 +1,4 @@
-# CHATGPT CORRECTED
+
 
 import os
 import time
@@ -97,3 +97,4 @@ if __name__ == "__main__":
                     f.write(folder + "\n")
 
         time.sleep(4)
+
