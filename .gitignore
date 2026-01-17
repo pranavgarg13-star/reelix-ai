@@ -1,0 +1,5 @@
+static/reels/
+__pycache__/
+*.mp4
+*.wav
+.env
