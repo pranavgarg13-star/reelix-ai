@@ -156,20 +156,22 @@ def run_worker():
         with open("done.txt") as f:
             done = [x.strip() for x in f.readlines()]
 
-        for folder in os.listdir("user_uploads"):
+        folders = os.listdir("user_uploads") if os.path.exists("user_uploads") else []
+        print(f"Found folders: {folders}")
+
+        for folder in folders:
             if folder in done:
                 continue
 
             try:
-              if download_images(folder) and text_to_audio(folder):
-                   create_reel(folder)
-              with open("done.txt", "a") as f:
-                   f.write(folder + "\n")
+                if download_images(folder) and text_to_audio(folder):
+                    create_reel(folder)
+                with open("done.txt", "a") as f:
+                    f.write(folder + "\n")
             except Exception as e:
-               print(f"Failed to process {folder}: {e}")
+                print(f"Failed to process {folder}: {e}")
 
         time.sleep(4)
-
 
 if __name__ == "__main__":
     run_worker()

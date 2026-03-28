@@ -1,5 +1,6 @@
 import cloudinary
 import cloudinary.uploader
+import cloudinary.api
 from dotenv import load_dotenv
 import threading
 
@@ -81,7 +82,7 @@ def create():
 
 @app.route("/gallery")
 def gallery():
-    import cloudinary.api
+    
     try:
         result = cloudinary.api.resources(
             type="upload",
