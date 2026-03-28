@@ -164,8 +164,11 @@ def run_worker():
                 continue
 
             try:
-                if download_images(folder) and text_to_audio(folder):
-                    create_reel(folder)
+                audio_ok = text_to_audio(folder)
+                images_ok = download_images(folder)
+                print(f"audio_ok={audio_ok}, images_ok={images_ok}")
+                if audio_ok and images_ok:
+                   create_reel(folder)
                 with open("done.txt", "a") as f:
                     f.write(folder + "\n")
             except Exception as e:
