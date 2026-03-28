@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+venv/
+.env
+
+# App-generated files
+user_uploads/
+static/reels/
+done.txt
+
+# OS
+.DS_Store
+Thumbs.db

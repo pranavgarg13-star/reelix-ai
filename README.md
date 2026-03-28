@@ -1,0 +1,16 @@
+# Reelix AI 🎬
+
+Reelix AI is an AI-powered reel generator that allows users to:
+- Upload multiple video clips
+- Add voice/text input
+- Generate short-form reels
+- View generated reels in a gallery
+
+## Tech Stack
+- Flask
+- HTML / CSS / Bootstrap
+- JavaScript
+
+## Status
+Core functionality is complete and stable.
+Additional personalization features will be added in future versions.

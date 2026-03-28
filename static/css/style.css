@@ -1,0 +1,252 @@
+/* =========================
+   Root Theme Variables
+   ========================= */
+:root {
+    --bg-main: #0F0F14;
+    --bg-secondary: #151520;
+
+    --primary-color: #7C3AED;      /* Electric Purple */
+    --primary-hover: #A78BFA;
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #B5B5C5;
+
+    --border-glow: rgba(124, 58, 237, 0.25);
+}
+
+/* =========================
+   Base Styles
+   ========================= */
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif,system-ui, -apple-system, BlinkMacSystemFont,;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+}
+
+
+/* =========================
+   Navbar Styles
+   ========================= */
+.navbar {
+    background: rgba(15, 15, 20, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border-glow);
+}
+
+.navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    margin: 0 1rem;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--text-primary) !important;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* =========================
+   Hero Section
+   ========================= */
+.hero-section {
+    background:
+        radial-gradient(circle at top, rgba(124,58,237,0.25), transparent 55%),
+        linear-gradient(180deg, #0F0F14, #151520);
+    padding: 7rem 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3.8rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+}
+
+.hero-subtitle {
+    font-size: 1.4rem;
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    color: var(--text-secondary);
+}
+
+/* CTA Button */
+.cta-button {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 0 25px rgba(124,58,237,0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 0 40px rgba(124,58,237,0.6);
+    color: white;
+}
+
+/* =========================
+   Features Section
+   ========================= */
+.features-section {
+    padding: 5.5rem 0;
+    background-color: var(--bg-secondary);
+}
+
+.feature-card {
+    background: #0F0F14;
+    border-radius: 18px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    border: 1px solid var(--border-glow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px rgba(124,58,237,0.25);
+}
+
+.feature-icon {
+    font-size: 2.6rem;
+    color: var(--primary-color);
+    margin-bottom: 1.2rem;
+}
+
+/* =========================
+   Showcase Section
+   ========================= */
+.showcase-section {
+    padding: 5.5rem 0;
+    background-color: var(--bg-main);
+}
+
+.showcase-title {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    font-weight: 700;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.8rem;
+    padding: 0 1rem;
+}
+
+.showcase-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.showcase-image:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 25px rgba(124,58,237,0.35);
+}
+
+/* =========================
+   Footer
+   ========================= */
+footer {
+    background: #0B0B10;
+    border-top: 1px solid var(--border-glow);
+    padding: 2rem 0;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-secondary);
+}
+
+.social-links a {
+    color: var(--text-secondary);
+    margin: 0 10px;
+    font-size: 1.4rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* =========================
+   Responsive Tweaks
+   ========================= */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.6rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+    }
+}
+
+/* =========================
+   Dark Scrollbar Styling
+   ========================= */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0F0F14;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        #7C3AED,
+        #A78BFA
+    );
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #A78BFA;
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #7C3AED #0F0F14;
+}
