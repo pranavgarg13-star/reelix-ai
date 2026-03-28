@@ -1,7 +1,8 @@
 __pycache__/
 *.pyc
-venv/
+
 .env
+venv/
 
 # App-generated files
 user_uploads/
