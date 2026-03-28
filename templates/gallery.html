@@ -11,7 +11,7 @@
     <h1 class="gallery-title">Reel Gallery</h1>
     <div class="gallery-grid">
     {% for reel in videos %}
-     <video src="{{ url_for('static', filename='reels/' ~ reel) }}" controls></video>
+     <video src="{{ reel }}" controls></video>
     {% endfor %}
 
 </div>

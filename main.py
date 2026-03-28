@@ -1,3 +1,6 @@
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
 
 
 from flask import Flask, render_template, request
@@ -5,10 +8,18 @@ import uuid
 from werkzeug.utils import secure_filename
 import os
 
+
+load_dotenv()
+
 UPLOAD_FOLDER = "user_uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}  # images only; FFmpeg stitches these into video
 
 app = Flask(__name__)
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET")
+)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
@@ -49,27 +60,32 @@ def create():
             file = request.files[key]
 
             if file and allowed_file(file.filename):
-                ext = file.filename.rsplit(".", 1)[1].lower()
-                filename = f"img_{image_index}.{ext}"
-                image_index += 1
+               cloudinary.uploader.upload(
+        file,
+        folder=f"reelix/{rec_id}",
+        public_id=f"img_{image_index}",
+        overwrite=True
+    )
+               image_index += 1
 
-                file.save(os.path.join(folder_path, filename))
-
-        return render_template("create.html", myid=myid, success=True)
-
-    return render_template("create.html", myid=myid)
-
+    return render_template("create.html", myid=myid, success=True)
 
 @app.route("/gallery")
 def gallery():
-    reels_dir = "static/reels"
-    videos = []
-
-    if os.path.exists(reels_dir):
-        videos = os.listdir(reels_dir)
+    import cloudinary.api
+    try:
+        result = cloudinary.api.resources(
+            type="upload",
+            prefix="reelix/reels/",
+            resource_type="video",
+            max_results=50
+        )
+        videos = [r["secure_url"] for r in result["resources"]]
+    except Exception as e:
+        print(f"Cloudinary error: {e}")
+        videos = []
 
     return render_template("gallery.html", videos=videos)
-
 
 # ---------- RUN ----------
 
