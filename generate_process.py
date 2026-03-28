@@ -19,11 +19,16 @@ def text_to_audio(folder):
     if not text:
         print("desc.txt empty")
         return False
+    
+    result = text_to_speech_file(text, folder)
+    if result is None:
+       print("Audio generation failed, skipping reel")
+    return False
 
-    text_to_speech_file(text, folder)
-    return True
 
-
+   
+    
+   
 def create_input_file(folder):
     base = f"user_uploads/{folder}"
     images = sorted([
@@ -44,6 +49,8 @@ def create_input_file(folder):
             f.write(f"file '{full}'\n")
             f.write("duration 1\n")
 
+        # FFmpeg concat demuxer requires the last file to be written
+        # again without a duration to properly terminate the stream
         f.write(f"file '{full}'\n")
 
     return True
@@ -62,19 +69,28 @@ def create_reel(folder):
 
     out = f"static/reels/{folder}.mp4"
 
-    cmd = (
-        f'ffmpeg -y -f concat -safe 0 '
-        f'-i "{base}/input.txt" '
-        f'-i "{base}/audio.mp3" '
-        f'-vf "scale=1080:1920:force_original_aspect_ratio=decrease,'
-        f'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black" '
-        f'-c:v libx264 -c:a aac -shortest -r 30 '
-        f'-pix_fmt yuv420p "{out}"'
-    )
+    cmd = [
+    "ffmpeg", "-y",
+    "-f", "concat",
+    "-safe", "0",
+    "-i", f"{base}/input.txt",
+    "-i", f"{base}/audio.mp3",
+    "-vf", "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black",
+    "-c:v", "libx264",
+    "-c:a", "aac",
+    "-shortest",
+    "-r", "30",
+    "-pix_fmt", "yuv420p",
+    out ]
 
-    subprocess.run(cmd, shell=True, check=True)
-    print("Video created:", out)
-
+    
+    try:
+       subprocess.run(cmd, shell=False, check=True, timeout=120)
+       print("Video created:", out)
+    except subprocess.TimeoutExpired:
+       print("FFmpeg timed out")
+    except subprocess.CalledProcessError as e:
+       print(f"FFmpeg failed: {e}")
 
 if __name__ == "__main__":
     while True:
@@ -90,10 +106,13 @@ if __name__ == "__main__":
             if folder in done:
                 continue
 
-            if text_to_audio(folder):
-                create_reel(folder)
-
-                with open("done.txt", "a") as f:
-                    f.write(folder + "\n")
-
+            try:
+              if text_to_audio(folder):
+                  create_reel(folder)
+              with open("done.txt", "a") as f:
+                   f.write(folder + "\n")
+            except Exception as e:
+               print(f"Failed to process {folder}: {e}")
+               
         time.sleep(4)
+

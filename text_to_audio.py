@@ -16,14 +16,12 @@ def text_to_speech_file(text: str, folder: str) -> str:
     save_file_path = os.path.join(folder_path, "audio.mp3")
 
     # 3️⃣ Generate audio using gTTS
-    tts = gTTS(
-        text=text,
-        lang="en",     # language
-        slow=False     # normal speed
-    )
-
-    # 4️⃣ Save audio file
-    tts.save(save_file_path)
+    try:
+       tts = gTTS(text=text, lang="en", slow=False)
+       tts.save(save_file_path)
+    except Exception as e:
+         print(f"gTTS failed: {e}")
+         return None
 
     print(f"{save_file_path}: Audio file saved successfully!")
 

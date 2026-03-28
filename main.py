@@ -6,10 +6,11 @@ from werkzeug.utils import secure_filename
 import os
 
 UPLOAD_FOLDER = "user_uploads"
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}  # images only; FFmpeg stitches these into video
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 
 # ---------- UTIL ----------
@@ -25,10 +26,10 @@ def home():
 
 @app.route("/create", methods=["GET", "POST"])
 def create():
-    myid = str(uuid.uuid1())
+    myid = str(uuid.uuid4())
 
     if request.method == "POST":
-        rec_id = request.form.get("uuid")
+        rec_id = str(uuid.uuid4())
         desc = request.form.get("text", "").strip()
 
         if not rec_id:
@@ -75,4 +76,4 @@ if __name__ == "__main__":
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     os.makedirs("static/reels", exist_ok=True)
 
-    app.run(debug=True)
+    app.run(debug=False)
