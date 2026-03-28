@@ -146,7 +146,7 @@ def create_reel(folder):
     except subprocess.CalledProcessError as e:
        print(f"FFmpeg failed: {e}")
 
-if __name__ == "__main__":
+def run_worker():
     while True:
         print("Processing queue...")
 
@@ -170,3 +170,6 @@ if __name__ == "__main__":
 
         time.sleep(4)
 
+
+if __name__ == "__main__":
+    run_worker()

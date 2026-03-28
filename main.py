@@ -1,7 +1,7 @@
 import cloudinary
 import cloudinary.uploader
 from dotenv import load_dotenv
-
+import threading
 
 from flask import Flask, render_template, request
 import uuid
@@ -13,6 +13,10 @@ load_dotenv()
 
 UPLOAD_FOLDER = "user_uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}  # images only; FFmpeg stitches these into video
+
+def start_worker():
+    import generate_process
+    generate_process.run_worker()
 
 app = Flask(__name__)
 cloudinary.config(
@@ -91,6 +95,8 @@ def gallery():
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs("static/reels", exist_ok=True)
+worker_thread = threading.Thread(target=start_worker, daemon=True)
+worker_thread.start()
 
 if __name__ == "__main__":
     
