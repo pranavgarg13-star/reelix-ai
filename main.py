@@ -39,40 +39,45 @@ def home():
     return render_template("index.html")
 
 
+# At top level - runs on startup
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs("static/reels", exist_ok=True)
+worker_thread = threading.Thread(target=start_worker, daemon=True)
+worker_thread.start()
+
+
 @app.route("/create", methods=["GET", "POST"])
 def create():
-    myid = str(uuid.uuid4())
-
     if request.method == "POST":
         rec_id = str(uuid.uuid4())
         desc = request.form.get("text", "").strip()
 
-        if not rec_id:
-            return "Invalid request", 400
-
-        folder_path = os.path.join(app.config["UPLOAD_FOLDER"], rec_id)
-        os.makedirs(folder_path, exist_ok=True)
-
-        # Save description text
-        with open(os.path.join(folder_path, "desc.txt"), "w", encoding="utf-8") as f:
+        # Write job file so worker knows to process this folder
+        job_path = os.path.join(app.config["UPLOAD_FOLDER"], rec_id)
+        os.makedirs(job_path, exist_ok=True)
+        with open(os.path.join(job_path, "desc.txt"), "w", encoding="utf-8") as f:
             f.write(desc)
 
+        # Upload images to Cloudinary
         image_index = 1
-
-        # Save uploaded images
         for key in request.files:
             file = request.files[key]
-
             if file and allowed_file(file.filename):
-               cloudinary.uploader.upload(
-        file,
-        folder=f"reelix/{rec_id}",
-        public_id=f"img_{image_index}",
-        overwrite=True
-    )
-               image_index += 1
+                try:
+                    cloudinary.uploader.upload(
+                        file,
+                        folder=f"reelix/{rec_id}",
+                        public_id=f"img_{image_index}",
+                        overwrite=True
+                    )
+                    print(f"Uploaded img_{image_index} to Cloudinary")
+                    image_index += 1
+                except Exception as e:
+                    print(f"Cloudinary upload failed: {e}")
 
-    return render_template("create.html", myid=myid, success=True)
+        return render_template("create.html", myid=rec_id, success=True)
+
+    return render_template("create.html", myid=str(uuid.uuid4()))
 
 @app.route("/gallery")
 def gallery():
@@ -93,10 +98,6 @@ def gallery():
 
 # ---------- RUN ----------
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-os.makedirs("static/reels", exist_ok=True)
-worker_thread = threading.Thread(target=start_worker, daemon=True)
-worker_thread.start()
 
 if __name__ == "__main__":
     
