@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: reelix-ai
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: gunicorn main:app
+    envVars:
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  - type: worker
+    name: reelix-worker
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: python reel_maker.py
+    envVars:
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
