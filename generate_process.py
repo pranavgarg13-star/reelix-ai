@@ -1,9 +1,20 @@
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from dotenv import load_dotenv
 
 import os
 import time
 import subprocess
 from text_to_audio import text_to_speech_file
+
+load_dotenv()
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET")
+)
+
 
 def text_to_audio(folder):
     print("TTA - ", folder)
@@ -26,7 +37,39 @@ def text_to_audio(folder):
     return False
 
 
-   
+def download_images(folder):
+    import requests
+    base = f"user_uploads/{folder}"
+    os.makedirs(base, exist_ok=True)
+
+    try:
+        result = cloudinary.api.resources(
+            type="upload",
+            prefix=f"reelix/{folder}/",
+            max_results=50
+        )
+        resources = sorted(result["resources"], key=lambda x: x["public_id"])
+    except Exception as e:
+        print(f"Cloudinary fetch failed: {e}")
+        return False
+
+    if not resources:
+        print("No images found on Cloudinary")
+        return False
+
+    for i, resource in enumerate(resources, 1):
+        url = resource["secure_url"]
+        ext = url.split(".")[-1].split("?")[0]
+        filepath = os.path.join(base, f"img_{i}.{ext}")
+        try:
+            response = requests.get(url, timeout=30)
+            with open(filepath, "wb") as f:
+                f.write(response.content)
+        except Exception as e:
+            print(f"Failed to download image {url}: {e}")
+            return False
+
+    return True   
     
    
 def create_input_file(folder):
@@ -87,6 +130,17 @@ def create_reel(folder):
     try:
        subprocess.run(cmd, shell=False, check=True, timeout=120)
        print("Video created:", out)
+       try:
+           cloudinary.uploader.upload(
+        out,
+        folder="reelix/reels",
+        public_id=folder,
+        resource_type="video",
+        overwrite=True
+    )
+           print("Video uploaded to Cloudinary")
+       except Exception as e:
+             print(f"Cloudinary upload failed: {e}")
     except subprocess.TimeoutExpired:
        print("FFmpeg timed out")
     except subprocess.CalledProcessError as e:
@@ -107,12 +161,12 @@ if __name__ == "__main__":
                 continue
 
             try:
-              if text_to_audio(folder):
-                  create_reel(folder)
+              if download_images(folder) and text_to_audio(folder):
+                   create_reel(folder)
               with open("done.txt", "a") as f:
                    f.write(folder + "\n")
             except Exception as e:
                print(f"Failed to process {folder}: {e}")
-               
+
         time.sleep(4)
 
