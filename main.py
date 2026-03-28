@@ -72,8 +72,11 @@ def gallery():
 
 
 # ---------- RUN ----------
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs("static/reels", exist_ok=True)
+
 if __name__ == "__main__":
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    os.makedirs("static/reels", exist_ok=True)
+    
 
     app.run(debug=False)
