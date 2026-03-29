@@ -118,16 +118,20 @@ def create_reel(folder):
     "ffmpeg", "-y",
     "-f", "concat",
     "-safe", "0",
-    "-i", f"{base}/input.txt",
-    "-i", f"{base}/audio.mp3",
-    "-vf", "scale=540:960:force_original_aspect_ratio=decrease,pad=540:960:(ow-iw)/2:(oh-ih)/2:black",
+    "-i", os.path.join(base, "input.txt"),
+    "-i", os.path.join(base, "audio.mp3"),
+    "-vf", "scale=360:640:force_original_aspect_ratio=decrease,pad=360:640:(ow-iw)/2:(oh-ih)/2:black",
     "-c:v", "libx264",
     "-preset", "ultrafast",
+    "-crf", "35",
     "-c:a", "aac",
+    "-b:a", "48k",
     "-shortest",
-    "-r", "30",
+    "-r", "24",
     "-pix_fmt", "yuv420p",
-    out ]
+    "-threads", "1",
+    out
+]
 
     
     try:
