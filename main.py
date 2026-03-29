@@ -12,7 +12,8 @@ import os
 
 load_dotenv()
 
-UPLOAD_FOLDER = "user_uploads"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "user_uploads")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}  # images only; FFmpeg stitches these into video
 
 def start_worker():

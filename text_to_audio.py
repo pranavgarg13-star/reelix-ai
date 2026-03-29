@@ -1,7 +1,8 @@
 import os
 from gtts import gTTS
 
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "user_uploads")
 def text_to_speech_file(text: str, folder: str) -> str:
     """
     Converts text to speech using Google Text-to-Speech (gTTS)
@@ -9,7 +10,7 @@ def text_to_speech_file(text: str, folder: str) -> str:
     """
 
     # 1️⃣ Ensure the user folder exists
-    folder_path = os.path.join("user_uploads", folder)
+    folder_path = os.path.join(UPLOAD_FOLDER, folder)
     os.makedirs(folder_path, exist_ok=True)
 
     # 2️⃣ Output file path

@@ -8,6 +8,8 @@ import time
 import subprocess
 from text_to_audio import text_to_speech_file
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "user_uploads")
 load_dotenv()
 cloudinary.config(
     cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
@@ -19,7 +21,7 @@ cloudinary.config(
 def text_to_audio(folder):
     print("TTA - ", folder)
 
-    desc = f"user_uploads/{folder}/desc.txt"
+    desc = os.path.join(UPLOAD_FOLDER, folder, "desc.txt")
     if not os.path.exists(desc):
         print("desc.txt missing")
         return False
@@ -39,7 +41,7 @@ def text_to_audio(folder):
 
 def download_images(folder):
     import requests
-    base = f"user_uploads/{folder}"
+    base = os.path.join(UPLOAD_FOLDER, folder)
     os.makedirs(base, exist_ok=True)
 
     try:
@@ -73,7 +75,7 @@ def download_images(folder):
     
    
 def create_input_file(folder):
-    base = f"user_uploads/{folder}"
+    base = os.path.join(UPLOAD_FOLDER, folder)
     images = sorted([
         f for f in os.listdir(base)
         if f.lower().endswith((".png", ".jpg", ".jpeg"))
@@ -100,7 +102,7 @@ def create_input_file(folder):
 
 
 def create_reel(folder):
-    base = f"user_uploads/{folder}"
+    base = os.path.join(UPLOAD_FOLDER, folder)
 
     if not os.path.exists(f"{base}/audio.mp3"):
         print("audio.mp3 missing")
@@ -158,7 +160,7 @@ def run_worker():
         with open("done.txt") as f:
             done = [x.strip() for x in f.readlines()]
 
-        folders = os.listdir("user_uploads") if os.path.exists("user_uploads") else []
+        folders = os.listdir(UPLOAD_FOLDER) if os.path.exists(UPLOAD_FOLDER) else []
         print(f"Found folders: {folders}")
 
         for folder in folders:
