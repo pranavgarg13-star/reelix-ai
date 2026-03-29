@@ -35,9 +35,9 @@ def text_to_audio(folder):
     
     result = text_to_speech_file(text, folder)
     if result is None:
-       print("Audio generation failed, skipping reel")
-    return False
-
+          print("Audio generation failed, skipping reel")
+          return False
+    return True
 
 def download_images(folder):
     import requests
