@@ -147,6 +147,8 @@ def create_reel(folder):
        print(f"FFmpeg failed: {e}")
 
 def run_worker():
+    with open("done.txt", "w") as f:
+        f.write("")
     while True:
         print("Processing queue...")
 
@@ -169,8 +171,8 @@ def run_worker():
                 print(f"audio_ok={audio_ok}, images_ok={images_ok}")
                 if audio_ok and images_ok:
                    create_reel(folder)
-                with open("done.txt", "a") as f:
-                    f.write(folder + "\n")
+                   with open("done.txt", "a") as f:
+                      f.write(folder + "\n")
             except Exception as e:
                 print(f"Failed to process {folder}: {e}")
 
