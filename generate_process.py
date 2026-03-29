@@ -77,9 +77,9 @@ def download_images(folder):
 def create_input_file(folder):
     base = os.path.join(UPLOAD_FOLDER, folder)
     images = sorted([
-        f for f in os.listdir(base)
-        if f.lower().endswith((".png", ".jpg", ".jpeg"))
-    ])
+    f for f in os.listdir(base)
+    if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
+])
 
     if not images:
         print("No images found")
